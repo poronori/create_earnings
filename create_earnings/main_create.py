@@ -1,4 +1,4 @@
-from .edit_excel import open_excel
+from .edit_excel import edit
 def main():
     print('Hello World')
-    open_excel()
+    edit()
