@@ -1,5 +1,6 @@
 ###### Requirements without Version Specifiers ######`
 openpyxl            # エクセル操作
+selenium
 
 ###### Requirements with Version Specifiers ######`
 # docopt == 0.6.1             # Version Matching. Must be version 0.6.1
