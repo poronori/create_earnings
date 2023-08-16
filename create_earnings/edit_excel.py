@@ -2,16 +2,22 @@ import openpyxl
 import configparser
 import datetime
 from copy import copy
-
-date = '2023/8/1'
-name = 'なんかの品名'
-price = '1000'
-commission = '100'
-customer = 'テスト 太郎'
-address = '北海道 名古屋市 伏見'
-code = 'a99999999'
+from .scraping_data import ScrapingData
 
 def edit() : 
+    print('start edit')
+    date = ScrapingData.date
+    name = ScrapingData.name
+    price = ScrapingData.price
+    commission = ScrapingData.commission
+    customer = ScrapingData.customer
+    address = ScrapingData.address
+    code = ScrapingData.code
+    
+    if not date:
+        print('取得データなし')
+        return
+
     #設定ファイルからエクセルのパスを取得
     inifile = configparser.SafeConfigParser()
     inifile.read('config/config.ini', encoding='utf-8')
@@ -65,6 +71,8 @@ def edit() :
     ws.cell(row = nextRow, column = 12).value = code       #コード
 
     wb.save(excel_path)
+    
+    print('end edit')
 
 #日時を〇月×日にフォーマット
 def string_to_datetime(date_string) :

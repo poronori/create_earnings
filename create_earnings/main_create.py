@@ -3,3 +3,4 @@ from .scraping import open
 def main():
     print('Hello World')
     open()
+    edit()
