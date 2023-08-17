@@ -6,26 +6,44 @@ from .scraping_data import ScrapingData
 
 def edit() : 
     print('start edit')
-    date = ScrapingData.date
-    name = ScrapingData.name
-    price = ScrapingData.price
-    commission = ScrapingData.commission
-    customer = ScrapingData.customer
-    address = ScrapingData.address
-    code = ScrapingData.code
     
-    if not date:
-        print('取得データなし')
-        return
-
     #設定ファイルからエクセルのパスを取得
     inifile = configparser.SafeConfigParser()
     inifile.read('config/config.ini', encoding='utf-8')
     excel_path = inifile.get('DEFAULT', 'ExcelPath')
-    
-    #現年の販売リストシートを開く
     wb = openpyxl.load_workbook(excel_path)
+    
+    #販売リスト
+    add_create_list(wb)
+    #宛名
+    ws = wb['宛名']
+    edit_addressee(ws)
+    ws = wb['宛名 圧迫厳禁']
+    edit_addressee(ws)
+
+    wb.save(excel_path)
+    
+    print('end edit')
+
+# 販売リストに追記
+def add_create_list(wb):
+    
+    date = ScrapingData.get_date()
+    name = ScrapingData.get_name()
+    price = ScrapingData.get_price()
+    commission = ScrapingData.get_commission()
+    customer = ScrapingData.get_customer()
+    address = ScrapingData.get_address()
+    code = ScrapingData.get_code()
     current_year = datetime.date.today().year
+    
+    print(date)
+    print(price)
+    print(commission)
+    print(customer)
+    print(address)
+    print(code)
+    
     ws = wb['販売リスト %s' %current_year]
     
     #一番下の行を取得
@@ -57,22 +75,29 @@ def edit() :
 
     #値をセット
     no = ws.cell(row = maxRow, column = 1).value
-    ws.cell(row = nextRow, column = 1).value = int(no) + 1 #No
-    ws.cell(row = nextRow, column = 2).value = string_to_datetime(date)    #購入日
-    ws.cell(row = nextRow, column = 3).value = name        #品名
-    ws.cell(row = nextRow, column = 4).value = int(price)  #商品代金
-    ws.cell(row = nextRow, column = 5).value = int(commission)  #販売手数料
-    ws.cell(row = nextRow, column = 6).value = ''          #梱包資材１   
-    ws.cell(row = nextRow, column = 7).value = '封筒'          #梱包資材２
-    ws.cell(row = nextRow, column = 8).value = ''          #送料
-    ws.cell(row = nextRow, column = 9).value = profit      #販売利益
-    ws.cell(row = nextRow, column = 10).value = customer   #購入者
-    ws.cell(row = nextRow, column = 11).value = prefecture_from_address(address)    #住所
-    ws.cell(row = nextRow, column = 12).value = code       #コード
+    ws.cell(row = nextRow, column = 1).value = int(no) + 1   #No
+    ws.cell(row = nextRow, column = 2).value = date          #購入日
+    ws.cell(row = nextRow, column = 3).value = name          #品名
+    ws.cell(row = nextRow, column = 4).value = price         #商品代金
+    ws.cell(row = nextRow, column = 5).value = commission    #販売手数料
+    ws.cell(row = nextRow, column = 6).value = ''            #梱包資材１   
+    ws.cell(row = nextRow, column = 7).value = '封筒'        #梱包資材２
+    ws.cell(row = nextRow, column = 8).value = ''            #送料
+    ws.cell(row = nextRow, column = 9).value = profit        #販売利益
+    ws.cell(row = nextRow, column = 10).value = customer     #購入者
+    ws.cell(row = nextRow, column = 11).value = address      #住所
+    ws.cell(row = nextRow, column = 12).value = code         #コード
 
-    wb.save(excel_path)
+def edit_addressee(ws):
+    postcode = ScrapingData.postcode
+    address1 = ScrapingData.get_address1()
+    address2 = ScrapingData.get_address2()
+    customer = ScrapingData.get_customer_full()
     
-    print('end edit')
+    ws['B2'].value = postcode
+    ws['B3'].value = address1
+    ws['B4'].value = address2
+    ws['B6'].value = customer
 
 #日時を〇月×日にフォーマット
 def string_to_datetime(date_string) :

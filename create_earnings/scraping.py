@@ -5,6 +5,7 @@ from .scraping_data import ScrapingData
 
 def open() :
     print('start open')
+    result = True
     # 起動時にオプションをつける。（ポート指定により、起動済みのブラウザのドライバーを取得）
     options = webdriver.ChromeOptions()
     options.add_experimental_option("debuggerAddress", "127.0.0.1:9222")
@@ -17,9 +18,11 @@ def open() :
     elif "https://www.yahoo.co.jp" in cur_url:
         set_paypay_data(driver)
     else :
-        messagebox.showwarning("URL不正", "メルカリかヤフーの取引画面を開いてください。")
+        messagebox.showwarning('URL不正', f'メルカリかペイペイフリマの取引画面を開いてください。{cur_url}')
+        result = False
     
     print('end open')
+    return result
 
 # メルカリのデータ取得
 def set_melcari_data(driver) :
@@ -33,7 +36,7 @@ def set_melcari_data(driver) :
     address2 = 'サンプル荘222'
     address = address1 + ' ' + address2
     code = 'a99999999'
-    
+    '''
     date = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[5]/div[2]/span').text
     price = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[1]/div[2]/span/span/span[2]').text
     commission = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[2]/div[2]/span/span/span[2]').text
@@ -43,6 +46,7 @@ def set_melcari_data(driver) :
     address2 = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[4]/div/div[2]/span/div/p[3]').text
     code = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[6]/div[2]/span/div/p').text
     address = address1 + ' ' + address2
+    
     print(date)
     print(price)
     print(commission)
@@ -50,16 +54,18 @@ def set_melcari_data(driver) :
     print(postcode)
     print(address)
     print(code)
+    '''
     
     scraping = ScrapingData()
-    scraping.setScrapingData(
+    scraping.set_scraping_data(
         date = date, 
         name = name, 
         price = price, 
         commission = commission, 
         customer = customer, 
         postcode = postcode, 
-        address = address, 
+        address1 = address1, 
+        address2 = address2, 
         code = code)
 
 # ペイペイフリマのデータ取得
@@ -74,7 +80,7 @@ def set_paypay_data(driver) :
     code = 'b123456789'
     
     scraping = ScrapingData()
-    scraping.setScrapingData(
+    scraping.set_scraping_data(
         date = date, 
         name = name, 
         price = price, 
