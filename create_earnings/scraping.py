@@ -38,6 +38,7 @@ def set_melcari_data(driver) :
     code = 'a99999999'
     '''
     date = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[5]/div[2]/span').text
+    name = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[2]/div/div[2]/a/mer-item-object').text
     price = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[1]/div[2]/span/span/span[2]').text
     commission = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[2]/div[2]/span/span/span[2]').text
     customer = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[4]/div/div[2]/span/div/p[4]').text

@@ -38,6 +38,7 @@ def add_create_list(wb):
     current_year = datetime.date.today().year
     
     print(date)
+    print(name)
     print(price)
     print(commission)
     print(customer)
