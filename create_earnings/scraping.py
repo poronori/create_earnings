@@ -4,7 +4,7 @@ from tkinter import messagebox
 from .scraping_data import ScrapingData
 
 def open() :
-    print('start open')
+    print('===========取引情報取得　開始===========')
     result = True
     # 起動時にオプションをつける。（ポート指定により、起動済みのブラウザのドライバーを取得）
     options = webdriver.ChromeOptions()
@@ -13,49 +13,48 @@ def open() :
     
     cur_url = driver.current_url
     print(cur_url)
-    if "https://www.google.com/" in cur_url:
-        set_melcari_data(driver)
+    if "https://jp.mercari.com/" in cur_url:
+        set_mercari_data(driver)
     elif "https://www.yahoo.co.jp" in cur_url:
         set_paypay_data(driver)
     else :
         messagebox.showwarning('URL不正', f'メルカリかペイペイフリマの取引画面を開いてください。{cur_url}')
         result = False
     
-    print('end open')
+    print('===========取引情報取得　終了===========')
     return result
 
 # メルカリのデータ取得
-def set_melcari_data(driver) :
-    date = '2023年8月14日 20:43'
-    name = 'なんかの品名'
-    price = '1,000'
-    commission = '100'
-    customer = 'テスト 太郎 様'
-    postcode = '〒299-3189'
-    address1 = '北海道 名古屋市 伏見'
-    address2 = 'サンプル荘222'
-    address = address1 + ' ' + address2
-    code = 'a99999999'
-    '''
+def set_mercari_data(driver) :
+    
     date = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[5]/div[2]/span').text
-    name = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[2]/div/div[2]/a/mer-item-object').text
     price = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[1]/div[2]/span/span/span[2]').text
     commission = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[2]/div[2]/span/span/span[2]').text
-    customer = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[4]/div/div[2]/span/div/p[4]').text
+    code = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[6]/div[2]/span/div/p').text
     postcode = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[4]/div/div[2]/span/div/p[1]').text
     address1 = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[4]/div/div[2]/span/div/p[2]').text
     address2 = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[4]/div/div[2]/span/div/p[3]').text
-    code = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[3]/div[6]/div[2]/span/div/p').text
+
+    #建物名がない場合はaddress2に購入者名が入る
+    try:
+        customer = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[4]/div/div[2]/span/div/p[4]').text
+    except Exception:
+        customer = address2
+        address2 = ''
     address = address1 + ' ' + address2
     
+    #商品名はsharow-root内にあるので、別途取得する
+    shadowroot = driver.find_element(by=By.XPATH, value='//*[@id="main"]/div/div[1]/div/div/div[2]/div/div[2]/a/mer-item-object').shadow_root
+    name = shadowroot.find_element(by=By.CLASS_NAME, value='item-label').text
+    
     print(date)
+    print(name)
     print(price)
     print(commission)
     print(customer)
     print(postcode)
     print(address)
     print(code)
-    '''
     
     scraping = ScrapingData()
     scraping.set_scraping_data(

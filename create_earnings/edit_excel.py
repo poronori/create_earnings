@@ -5,12 +5,13 @@ from copy import copy
 from .scraping_data import ScrapingData
 
 def edit() : 
-    print('start edit')
+    print('===========エクセルに記入 開始===========')
     
     #設定ファイルからエクセルのパスを取得
     inifile = configparser.SafeConfigParser()
     inifile.read('config/config.ini', encoding='utf-8')
     excel_path = inifile.get('DEFAULT', 'ExcelPath')
+    print(excel_path)
     wb = openpyxl.load_workbook(excel_path)
     
     #販売リスト
@@ -23,7 +24,7 @@ def edit() :
 
     wb.save(excel_path)
     
-    print('end edit')
+    print('===========エクセルに記入 終了===========')
 
 # 販売リストに追記
 def add_create_list(wb):
@@ -37,13 +38,13 @@ def add_create_list(wb):
     code = ScrapingData.get_code()
     current_year = datetime.date.today().year
     
-    print(date)
-    print(name)
-    print(price)
-    print(commission)
-    print(customer)
-    print(address)
-    print(code)
+    print('購入日：   ' + date)
+    print('品名：     ' + name)
+    print('商品代金：  ' + str(price))
+    print('販売手数料：' + str(commission))
+    print('購入者：    ' + customer)
+    print('配送先；    ' + address)
+    print('コード：    ' + code)
     
     ws = wb['販売リスト %s' %current_year]
     
@@ -54,7 +55,7 @@ def add_create_list(wb):
         if not row[0] or row[0].value is None :
             maxRow = row[0].row - 1
             break
-    print(maxRow)
+    print('追加行:' + str(maxRow))
     nextRow = maxRow + 1
     
     #行を挿入

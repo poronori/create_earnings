@@ -56,7 +56,7 @@ class ScrapingData :
             return ''
         else:
             customer = ScrapingData.customer
-            return customer[0: len(customer) - 1]
+            return customer[0: len(customer) - 2]
     
     @staticmethod
     def get_customer_full():
